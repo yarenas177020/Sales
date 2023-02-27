@@ -1,4 +1,4 @@
-﻿@inject SweetAlertService swal
+﻿@inject SweetAlertService sweetAlertService
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
 
@@ -22,12 +22,6 @@
 @code {
     private EditContext editContext = null!;
 
-    protected override void OnInitialized()
-    {
-        editContext = new(Country);
-    }
-
-
     [EditorRequired]
     [Parameter]
     public Country Country { get; set; } = null!;
@@ -36,6 +30,10 @@
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }
 
+    protected override void OnInitialized()
+    {
+        editContext = new(Country);
+    }
 
     [EditorRequired]
     [Parameter]
@@ -57,12 +55,14 @@
             return;
         }
 
-        var result = await swal.FireAsync(new SweetAlertOptions
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Confirmación",
                 Text = "¿Deseas abandonar la página y perder los cambios?",
                 Icon = SweetAlertIcon.Warning,
-                ShowCancelButton = true
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText= "Si"
             });
 
         var confirm = !string.IsNullOrEmpty(result.Value);
@@ -78,4 +78,4 @@
 
 
 
-}
+

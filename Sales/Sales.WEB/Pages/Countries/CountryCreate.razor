@@ -21,15 +21,12 @@
             var mensajeError = await httpResponse.GetErrorMessageAsync();
             await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
         }
-        else
-        {
-            countryForm!.FormPostedSuccessfully = true;
-            navigationManager.NavigateTo("countries");
-        }
+        Return();
     }
 
     private void Return()
     {
+        countryForm!.FormPostedSuccessfully = true;
         navigationManager.NavigateTo("countries");
     }
 }
