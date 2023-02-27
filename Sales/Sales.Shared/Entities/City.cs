@@ -4,22 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Sales.Shared.Entities
 {
-    public class Country
+    public class City
     {
         public int Id { get; set; }
 
-        [Display(Name = "País")]
-        [MaxLength(100, ErrorMessage = "El campo {0} de tener máximo {1} caractéres.")]
+        [Display(Name = "Departamento/Estado")]
+        [MaxLength(100, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Name { get; set; } = null!;
 
-        public ICollection<State>? States { get; set; }
+        public State? State { get; set; }
 
-        [Display(Name = "Estados/Departamentos")]
-        public int StatesNumber => States == null ? 0 : States.Count;
-
+        public int StateId { get; set; }
     }
 }
