@@ -1,5 +1,8 @@
 ﻿@page "/categories"
 @inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
 
 <h3>Categorías</h3>
 
@@ -8,7 +11,7 @@
 </div>
 
 <GenericList MyList="Categories">
-    <RecordsComplete>
+    <Body>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -17,21 +20,23 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var category in Categories)
+                @foreach (var category in Categories!)
                 {
                     <tr>
                         <td>
-                            <a class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger">Borrar</button>
+                            <a href="/countries/details/@category.Id" class="btn btn-info">Detalles</a>
+                            <a class="btn btn-warning" href="/categories/edit/@category.Id">Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(category))>Borrar</button>
                         </td>
                         <td>
                             @category.Name
-                        </td>
+                        </td>                       
+
                     </tr>
                 }
             </tbody>
         </table>
-    </RecordsComplete>
+    </Body>
 </GenericList>
 
 
@@ -40,9 +45,52 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var responseHppt = await repository.Get<List<Category>>("api/categories");
-        Categories = responseHppt.Response!;
+        await Load();
     }
+
+    private async Task Load()
+    {
+        var responseHttp = await repository.Get<List<Category>>("api/categories");
+        Categories = responseHttp.Response!;
+    }
+
+    private async Task DeleteAsync(Category category)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.Delete($"api/categories/{category.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
+    }
+
 
 
 }

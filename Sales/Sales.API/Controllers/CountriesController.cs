@@ -38,7 +38,7 @@ namespace Sales.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> Get(int id)
         {
-            var country = await _context.Categories
+            var country = await _context.Countries
                  .FirstOrDefaultAsync(x => x.Id == id);
             if (country is null)
             {
@@ -48,14 +48,14 @@ namespace Sales.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Category category)
+        public async Task<ActionResult> Post(Country country)
         {
 
-            _context.Add(category);
+            _context.Add(country);
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(category);
+                return Ok(country);
             }
             catch (DbUpdateException dbUpdateException)
             {
