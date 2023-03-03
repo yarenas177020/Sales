@@ -17,8 +17,8 @@
         var responseHttp = await repository.Post("/api/categories", category);
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await sweetAlertService.FireAsync("Error,message");
+            var messageError = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", messageError, SweetAlertIcon.Error);
             return;
         }
         else
@@ -31,6 +31,7 @@
 
     private void Return()
     {
+        categoryForm!.FormPostedSuccessfully = true;
         navigationManager.NavigateTo("/categories");
     }
 
