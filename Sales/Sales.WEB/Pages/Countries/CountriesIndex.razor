@@ -11,28 +11,27 @@
     <Body>
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th></th>
+                <tr>                    
                     <th>País</th>
                     <th>Departamentos/Estados</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var country in Countries!)
                 {
-                    <tr>
-                        <td>
-                            <a href="/countries/details/@country.Id" class="btn btn-info">Detalles</a>
-                            <a class ="btn btn-warning" href="/countries/edit/@country.Id">Editar</a>
-                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(country))>Borrar</button>
-                        </td>
+                    <tr>                        
                         <td>
                             @country.Name
                         </td>
                         <td>
                             @country.StatesNumber
                         </td>
-
+                        <td>
+                            <a href="/countries/details/@country.Id" class="btn btn-info">Detalles</a>
+                            <a class="btn btn-warning" href="/countries/edit/@country.Id">Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(country))>Borrar</button>
+                        </td>
                     </tr>
                 }
             </tbody>
