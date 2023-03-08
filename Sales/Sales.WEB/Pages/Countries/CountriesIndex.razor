@@ -5,6 +5,11 @@
 
 <h3>Países</h3>
 
+<Pagination CurrentPage="currentPage"
+            TotalPages="totalPages"
+            SelectedPage="SelectedPageAsync" />
+
+
 <a class="btn btn-primary mb-3" href="/countries/create">Nuevo País</a>
 
 <GenericList MyList="Countries">
@@ -13,8 +18,9 @@
             <thead>
                 <tr>                    
                     <th>País</th>
-                    <th>Departamentos/Estados</th>
-                    <th></th>
+                    <th style="width:220px">Estados / Departamentos</th>
+                    <th style="width:260px"></th>
+
                 </tr>
             </thead>
             <tbody>
@@ -41,16 +47,30 @@
 
 @code {
     public List<Country>? Countries { get; set; }
+    private int currentPage = 1;
+    private int totalPages;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadAsync();
     }
 
-    private async Task LoadAsync()
+    private async Task LoadAsync(int page=1)
     {
-        var responseHttp = await repository.Get<List<Country>>("/api/countries");
-        Countries = responseHttp.Response;
+        string url1 = $"api/countries?page={page}";
+        string url2 = $"api/countries/totalPages";
+
+        var responseHppt = await repository.Get<List<Country>>(url1);
+        var responseHppt2 = await repository.Get<int>(url2);
+        Countries = responseHppt.Response!;
+        totalPages = responseHppt2.Response!;
+
+    }
+
+    private async Task SelectedPageAsync(int page)
+    {
+        currentPage = page;
+        await LoadAsync(page);
     }
 
     private async Task DeleteAsync(Country country)
@@ -90,5 +110,18 @@
         {
             await LoadAsync();
         }
+    }
+
+    private async Task CleanFilterAsync()
+    {
+        //Filter = string.Empty;
+        await ApplyFilterAsync();
+    }
+
+    private async Task ApplyFilterAsync()
+    {
+        int page = 1;
+        await LoadAsync(page);
+        await SelectedPageAsync(page);
     }
 }
