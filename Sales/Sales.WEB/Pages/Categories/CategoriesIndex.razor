@@ -2,13 +2,16 @@
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
-
+@attribute [Authorize(Roles = "Admin")];
 
 <h3>Categorías</h3>
 
+
+
 <Pagination CurrentPage="currentPage"
             TotalPages="totalPages"
-            SelectedPage="SelectedPage" />
+            SelectedPage="SelectedPage"
+            Radio="9"/>
 
 
 <div class="mb-3">
