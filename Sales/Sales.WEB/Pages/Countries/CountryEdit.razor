@@ -23,6 +23,10 @@ else
     [Parameter]
     public int Id { get; set; }
 
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+
     protected override async Task OnInitializedAsync()
     {
         var responseHttp = await repository.Get<Country>($"api/countries/{Id}");
@@ -52,6 +56,7 @@ else
             await sweetAlertService.FireAsync("Error", messageError, SweetAlertIcon.Error);
             return;
         }
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
 
         Return();
     }

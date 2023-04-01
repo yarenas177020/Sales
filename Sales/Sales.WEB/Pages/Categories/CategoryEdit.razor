@@ -9,7 +9,7 @@
 
 @if (category is null)
 {
-    <p>Cargando...</p>
+    <div class="spinner" />
 }
 else
 {
@@ -23,6 +23,10 @@ else
 
     [Parameter]
     public int Id { get; set;}
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,10 +59,9 @@ else
             var messageError = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", messageError, SweetAlertIcon.Error);
         }
-        else
-        {
-            Return();
-        }
+       
+            await BlazoredModal.CloseAsync(ModalResult.Ok());
+            Return();      
 
     }
 

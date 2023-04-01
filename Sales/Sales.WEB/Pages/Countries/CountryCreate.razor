@@ -12,6 +12,10 @@
     private Country country = new();
     private CountryForm? countryForm;
 
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+
     private async Task Create()
     {
         var httpResponse = await repository.Post("api/countries", country);
@@ -21,6 +25,8 @@
             var mensajeError = await httpResponse.GetErrorMessageAsync();
             await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
         }
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+
         Return();
     }
 
